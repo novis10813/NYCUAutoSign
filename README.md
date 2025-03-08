@@ -83,5 +83,8 @@ poetry run python src/autoauth/nycu_sign.py
 如果再執行一次，就可以簽退
 
 # RoadMap
-- 一天登記八小時，因為目前沒辦法中間休息半小時
+- Docker
+  - 確保能夠長時間正常運作
+  - 一天登記八小時，因為目前沒辦法中間休息半小時
+
 - 接 telegram 或其他通訊軟體的 api 查看時數
