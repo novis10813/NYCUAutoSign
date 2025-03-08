@@ -369,8 +369,8 @@ def handle_singin_singout():
         driver = navigate_to_work_hours_system(driver)
         logger.info("成功導航到受雇者線上簽到退頁面")
 
-        # driver = signin_signout(driver)
-        # logger.info("簽到操作成功完成！")
+        driver = signin_signout(driver)
+        logger.info("簽到操作成功完成！")
 
     except CredentialsError as e:
         logger.error(f"憑證錯誤: {e}")
