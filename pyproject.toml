@@ -1,0 +1,25 @@
+[project]
+name = "autoauth"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "novis10813",email = "zhizhongz895253@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests (>=2.32.3,<3.0.0)",
+    "selenium (>=4.29.0,<5.0.0)",
+    "workalendar (>=17.0.0,<18.0.0)",
+    "icalendar (>=6.1.1,<7.0.0)",
+    "python-dotenv (>=1.0.1,<2.0.0)",
+    "webdriver-manager (>=4.0.2,<5.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "autoauth", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

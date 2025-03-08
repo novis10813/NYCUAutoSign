@@ -1,0 +1,14 @@
+services:
+  autoauth:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: autoauth
+    volumes:
+      - ${RECORD_DIR}:/app/record
+    environment:
+      - NYCU_USERNAME=${NYCU_USERNAME}
+      - NYCU_PASSWORD=${NYCU_PASSWORD}
+      - MONTHLY_REQUIRED_HOURS=${MONTHLY_REQUIRED_HOURS:-20}
+      - MONTHLY_START_DAY=${MONTHLY_START_DAY:-1}
+    restart: unless-stopped
