@@ -8,19 +8,28 @@ from pathlib import Path
 from calendar_holiday import get_nycu_calendar_holidays, check_weekend
 from nycu_sign import handle_singin_singout
 
+# 載入環境變數
+dotenv.load_dotenv()
+
+log_mapping = {
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL
+}
+
 # 設定 logging
 logging.basicConfig(
-    level=logging.INFO,
+    level=log_mapping[os.getenv("LOG_LEVEL", "INFO")],
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
 )
 logger = logging.getLogger(__name__)
 
-# 載入環境變數
-dotenv.load_dotenv()
 
 # 設定記錄目錄和環境變數
-RECORD_DIR = Path("/app/record")
+RECORD_DIR = Path(os.getenv("RECORD_DIR", "./record"))
 RECORD_DIR.mkdir(parents=True, exist_ok=True)
 
 # 從 .env 獲取每月需要的時數和每月開始日期
