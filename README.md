@@ -45,6 +45,11 @@ docker compose up -d
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
+如果是 Windows
+```powershell
+(Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
+```
+
 2. 確保你有一個 python=3.13 的環境 (可以用 conda 或其他你喜歡的東西管理)
 ```bash
 conda create -n 3.13 python=3.13
