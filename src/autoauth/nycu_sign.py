@@ -251,111 +251,30 @@ def navigate_to_work_hours_system(driver: webdriver.Chrome) -> webdriver.Chrome:
     except Exception as e:
         logger.error(f"導航過程中發生錯誤: {e}")
         raise NavigationException(f"導航過程中發生錯誤: {e}")
-    
-def confirmation_button(driver: webdriver.Chrome) -> bool:
-    try:
-        # 檢查是否有新的 iframe（如果「確定」按鈕在新的 iframe 中）
-        iframes = driver.find_elements(By.TAG_NAME, "iframe")
-        if iframes:
-            logger.debug(f"找到 {len(iframes)} 個 iframe")
-            driver.switch_to.frame(iframes[0])  # 假設仍在第一個 iframe 中
-
-        # 等待並點擊「確定」按鈕
-        confirm_xpath = "//input[@id='ContentPlaceHolder1_Button_attend' and @value='確定']"
-        confirm_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, confirm_xpath))
-        )
-        logger.debug("成功找到「確定」按鈕！")
-        logger.debug("按鈕 HTML 內容:")
-        logger.debug(driver.execute_script("return arguments[0].outerHTML;", confirm_element))
-
-        confirm_element.click()
-        logger.debug("已點擊「確定」按鈕！")
-        return True
-    
-    except Exception as e:
-        logger.error(f"確定按鈕點擊失敗: {e}")
-        raise ConfirmationError(f"確定按鈕點擊失敗: {e}")
         
+def toggle_signin_signout(driver: webdriver.Chrome):
+    iframes = driver.find_elements(By.TAG_NAME, "iframe")
+    if iframes:
+        driver.switch_to.frame(iframes[0])
     
-def signin_signout(driver: webdriver.Chrome) -> webdriver.Chrome:
-    try:
-        logger.debug("開始檢查頁面是否有「簽到SignIn」按鈕...")
-
-        # 定義目標選擇器，根據輸出優化為具體的元素
-        target_xpath = "//a[contains(text(), '簽到SignIn') and contains(@class, 'input-button')]"
-
-        # 檢查是否有 iframe
-        iframes = driver.find_elements(By.TAG_NAME, "iframe")
-        if iframes:
-            logger.debug(f"找到 {len(iframes)} 個 iframe")
-            driver.switch_to.frame(iframes[0])  # 切換到第一個 iframe（根據輸出只有 1 個）
-
-        # 等待並查找「簽到SignIn」按鈕
-        signin_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, target_xpath))
-        )
-        logger.debug("成功找到「簽到SignIn」按鈕！")
-        logger.debug("按鈕 HTML 內容:")
-        logger.debug(driver.execute_script("return arguments[0].outerHTML;", signin_element))
-
-        # 點擊按鈕
-        signin_element.click()
-        logger.debug("已點擊「簽到SignIn」按鈕！")
-        time.sleep(1)  # 等待頁面響應
-        
-        confirmation_button(driver)
-        return driver
-
-    except ConfirmationError as e:
-        raise e
-    except Exception as e:
-        logger.error(f"簽到過程中發生錯誤: {e}")
-        raise SignInError(f"簽到過程中發生錯誤: {e}")
-    finally:
-        # 還原到主內容
-        driver.switch_to.default_content()
-
-def signout_button(driver: webdriver.Chrome) -> webdriver.Chrome:
-    """
-    學校系統超白癡，沒有簽退按鈕，只有簽到按鈕
-    """
-    try:
-        logger.debug("開始檢查頁面是否有「簽退SignOut」按鈕...")
-
-        # 定義目標選擇器，根據輸出優化為具體的元素
-        target_xpath = "//a[contains(text(), '簽退SignOut') and contains(@class, 'input-button')]"
-
-        # 檢查是否有 iframe
-        iframes = driver.find_elements(By.TAG_NAME, "iframe")
-        if iframes:
-            logger.debug(f"找到 {len(iframes)} 個 iframe")
-            driver.switch_to.frame(iframes[0])
-
-        # 等待並查找「簽到SignIn」按鈕
-        signin_element = WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, target_xpath))
-        )
-        logger.debug("成功找到「簽退SignOut」按鈕！")
-        logger.debug("按鈕 HTML 內容:")
-        logger.debug(driver.execute_script("return arguments[0].outerHTML;", signin_element))
-
-        # 點擊按鈕
-        signin_element.click()
-        logger.debug("已點擊「簽退SignOut」按鈕！")
-        time.sleep(1)  # 等待頁面響應
-
-        confirmation_button(driver)
-        return driver
-
-    except ConfirmationError as e:
-        raise e
-    except Exception as e:
-        logger.error(f"簽退過程中發生錯誤: {e}")
-        raise SignOutError(f"簽退過程中發生錯誤: {e}")
-    finally:
-        # 還原到主內容
-        driver.switch_to.default_content()
+    # 統一按鈕選擇器，直接找 input-button 類的按鈕
+    button_xpath = "//a[contains(@class, 'input-button')]"
+    button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, button_xpath)))
+    
+    button_text = button.text
+    logger.debug(f"找到按鈕，文字為: {button_text}")
+    button.click()
+    logger.debug("已點擊按鈕")
+    
+    # 點擊「確定」按鈕
+    confirm_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//input[@id='ContentPlaceHolder1_Button_attend' and @value='確定']"))
+    )
+    confirm_button.click()
+    logger.info("簽到/簽退操作完成！")
+    
+    driver.switch_to.default_content()
+    return driver
 
 def handle_singin_singout():
     try:
@@ -369,7 +288,8 @@ def handle_singin_singout():
         driver = navigate_to_work_hours_system(driver)
         logger.info("成功導航到受雇者線上簽到退頁面")
 
-        driver = signin_signout(driver)
+        # driver = signin_signout(driver)
+        toggle_signin_signout(driver)
         logger.info("簽到操作成功完成！")
 
     except CredentialsError as e:
