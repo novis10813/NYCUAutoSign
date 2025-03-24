@@ -280,17 +280,9 @@ def handle_singin_singout():
     try:
         # 第一次操作：簽到
         driver = login_to_nycu_portal()
-        logger.info("成功登入陽明交通大學入口網站")
-
         driver = open_time_clock_system(driver)
-        logger.info("成功開啟人事拆勤系統")
-
         driver = navigate_to_work_hours_system(driver)
-        logger.info("成功導航到受雇者線上簽到退頁面")
-
-        # driver = signin_signout(driver)
-        toggle_signin_signout(driver)
-        logger.info("簽到操作成功完成！")
+        driver = toggle_signin_signout(driver)
 
     except CredentialsError as e:
         logger.error(f"憑證錯誤: {e}")
@@ -333,4 +325,6 @@ if __name__ == "__main__":
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
+    handle_singin_singout()
+    time.sleep(14460)
     handle_singin_singout()
