@@ -81,11 +81,10 @@ MONTHLY_START_DAY=START_DAY
 RECORD_DIR=YOUR_SYSTEM_PATH_FOR_RECORD_FILE
 ```
 
-6. 可以執行一次 `src/autoauth/nycu_sign.py` 來簽到
+6. 可以執行一次 `src/autoauth/nycu_sign.py` 來簽到，四個小時後會自動簽退
 ```bash
 poetry run python src/autoauth/nycu_sign.py
 ```
-如果再執行一次，就可以簽退
 
 # RoadMap
 - Docker
