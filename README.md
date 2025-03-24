@@ -12,7 +12,7 @@
 
 # How to use
 
-## 透過 Docker (recommended)
+## 透過 Docker
 
 1. 在根目錄設定你的 .env 檔案
 ```bash
@@ -39,7 +39,7 @@ RECORD_DIR=YOUR_SYSTEM_PATH_FOR_RECORD_FILE
 docker compose up -d
 ```
 
-## 直接在系統執行
+## 直接在系統執行 (recommend)
 1. 安裝 poetry
 ```bash
 curl -sSL https://install.python-poetry.org | python3 -
